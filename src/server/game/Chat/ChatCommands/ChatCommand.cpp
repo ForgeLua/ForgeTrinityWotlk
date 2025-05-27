@@ -25,7 +25,7 @@
 #include "Map.h"
 #include "Player.h"
 #include "ScriptMgr.h"
-#ifdef ELUNA
+#ifdef FORGE
 #include "LuaEngine.h"
 #endif
 #include "WorldSession.h"
@@ -301,9 +301,9 @@ namespace Trinity::Impl::ChatCommands
         }
         else if (!handler.HasSentErrorMessage())
         { /* invocation failed, we should show usage */
-#ifdef ELUNA
-            if (Eluna* e = sWorld->GetEluna())
-                if (!e->OnCommand(handler.IsConsole() ? nullptr : handler.GetSession()->GetPlayer(), std::string(cmdStr).c_str()))
+#ifdef FORGE
+            if (Forge* f = sWorld->GetForge())
+                if (!f->OnCommand(handler.IsConsole() ? nullptr : handler.GetSession()->GetPlayer(), std::string(cmdStr).c_str()))
                     return true;
 #endif
             cmd->SendCommandHelp(handler);
@@ -312,9 +312,9 @@ namespace Trinity::Impl::ChatCommands
         return true;
     }
 
-#ifdef ELUNA
-    if (Eluna* e = sWorld->GetEluna())
-        if (!e->OnCommand(handler.IsConsole() ? nullptr : handler.GetSession()->GetPlayer(), std::string(cmdStr).c_str()))
+#ifdef FORGE
+    if (Forge* f = sWorld->GetForge())
+        if (!f->OnCommand(handler.IsConsole() ? nullptr : handler.GetSession()->GetPlayer(), std::string(cmdStr).c_str()))
             return true;
 #endif
 

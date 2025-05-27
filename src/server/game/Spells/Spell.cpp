@@ -64,7 +64,7 @@
 #include "World.h"
 #include "WorldPacket.h"
 #include "WorldSession.h"
-#ifdef ELUNA
+#ifdef FORGE
 #include "LuaEngine.h"
 #endif
 extern SpellEffectHandlerFn SpellEffectHandlers[TOTAL_SPELL_EFFECTS];
@@ -3326,9 +3326,9 @@ void Spell::_cast(bool skipCheck)
         return;
     }
 
-#ifdef ELUNA
-    if (Eluna* e = m_caster->GetEluna())
-        e->OnSpellCast(this, skipCheck);
+#ifdef FORGE
+    if (Forge* f = m_caster->GetForge())
+        f->OnSpellCast(this, skipCheck);
 #endif
 
     if (Player* playerCaster = m_caster->ToPlayer())

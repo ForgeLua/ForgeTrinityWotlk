@@ -47,7 +47,7 @@
 #include "Player.h"
 #include "Realm.h"
 #include "ScriptMgr.h"
-#ifdef ELUNA
+#ifdef FORGE
 #include "LuaEngine.h"
 #endif
 #include "SocialMgr.h"
@@ -251,12 +251,12 @@ void WorldSession::SendPacket(WorldPacket const* packet)
 
     sScriptMgr->OnPacketSend(this, *packet);
 
-#ifdef ELUNA
+#ifdef FORGE
     if (Player* plr = GetPlayer())
     {
-        if (Eluna* e = plr->GetEluna())
+        if (Forge* f = plr->GetForge())
         {
-            if (!e->OnPacketSend(this, *packet))
+            if (!f->OnPacketSend(this, *packet))
                 return;
         }
     }
@@ -339,9 +339,9 @@ bool WorldSession::Update(uint32 diff, PacketFilter& updater)
                         if(AntiDOS.EvaluateOpcode(*packet, currentTime))
                         {
                             sScriptMgr->OnPacketReceive(this, *packet);
-#ifdef ELUNA
-                            if (Eluna* e = sWorld->GetEluna())
-                                if (!e->OnPacketReceive(this, *packet))
+#ifdef FORGE
+                            if (Forge* f = sWorld->GetForge())
+                                if (!f->OnPacketReceive(this, *packet))
                                     break;
 #endif
                             opHandle->Call(this, *packet);
@@ -360,9 +360,9 @@ bool WorldSession::Update(uint32 diff, PacketFilter& updater)
                     {
                         // not expected _player or must checked in packet hanlder
                         sScriptMgr->OnPacketReceive(this, *packet);
-#ifdef ELUNA
-                        if (Eluna* e = sWorld->GetEluna())
-                            if (!e->OnPacketReceive(this, *packet))
+#ifdef FORGE
+                        if (Forge* f = sWorld->GetForge())
+                            if (!f->OnPacketReceive(this, *packet))
                                 break;
 #endif
                         opHandle->Call(this, *packet);
@@ -379,9 +379,9 @@ bool WorldSession::Update(uint32 diff, PacketFilter& updater)
                     else if (AntiDOS.EvaluateOpcode(*packet, currentTime))
                     {
                         sScriptMgr->OnPacketReceive(this, *packet);
-#ifdef ELUNA
-                        if (Eluna* e = sWorld->GetEluna())
-                            if (!e->OnPacketReceive(this, *packet))
+#ifdef FORGE
+                        if (Forge* f = sWorld->GetForge())
+                            if (!f->OnPacketReceive(this, *packet))
                                 break;
 #endif
                         opHandle->Call(this, *packet);
@@ -406,9 +406,9 @@ bool WorldSession::Update(uint32 diff, PacketFilter& updater)
                     if (AntiDOS.EvaluateOpcode(*packet, currentTime))
                     {
                         sScriptMgr->OnPacketReceive(this, *packet);
-#ifdef ELUNA
-                        if (Eluna* e = sWorld->GetEluna())
-                            if (!e->OnPacketReceive(this, *packet))
+#ifdef FORGE
+                        if (Forge* f = sWorld->GetForge())
+                            if (!f->OnPacketReceive(this, *packet))
                                 break;
 #endif
                         opHandle->Call(this, *packet);

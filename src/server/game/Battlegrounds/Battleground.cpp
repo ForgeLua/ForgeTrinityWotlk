@@ -42,7 +42,7 @@
 #include "WorldPacket.h"
 #include "WorldStatePackets.h"
 #include <cstdarg>
-#ifdef ELUNA
+#ifdef FORGE
 #include "LuaEngine.h"
 #endif
 
@@ -142,10 +142,10 @@ Battleground::Battleground()
 
 Battleground::~Battleground()
 {
-#ifdef ELUNA
+#ifdef FORGE
     if(m_Map)
-        if (Eluna* e = m_Map->GetEluna())
-            e->OnBGDestroy(this, GetTypeID(), GetInstanceID());
+        if (Forge* f = m_Map->GetForge())
+            f->OnBGDestroy(this, GetTypeID(), GetInstanceID());
 #endif
 
     // remove objects and creatures
@@ -467,9 +467,9 @@ inline void Battleground::_ProcessJoin(uint32 diff)
 
         StartingEventOpenDoors();
 
-#ifdef ELUNA
-        if (Eluna* e = GetBgMap()->GetEluna())
-            e->OnBGStart(this, GetTypeID(), GetInstanceID());
+#ifdef FORGE
+        if (Forge* f = GetBgMap()->GetForge())
+            f->OnBGStart(this, GetTypeID(), GetInstanceID());
 #endif
 
         if (StartMessageIds[BG_STARTING_EVENT_FOURTH])
@@ -830,10 +830,10 @@ void Battleground::EndBattleground(uint32 winner)
 
         player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_BATTLEGROUND, player->GetMapId());
     }
-#ifdef ELUNA
+#ifdef FORGE
     //the type of the winner,change Team to BattlegroundTeamId,it could be better.
-    if (Eluna* e = GetBgMap()->GetEluna())
-        e->OnBGEnd(this, GetTypeID(), GetInstanceID(), Team(winner));
+    if (Forge* f = GetBgMap()->GetForge())
+        f->OnBGEnd(this, GetTypeID(), GetInstanceID(), Team(winner));
 #endif
 }
 

@@ -29,7 +29,7 @@
 #include "PoolMgr.h"
 #include "Player.h"
 #include "World.h"
-#ifdef ELUNA
+#ifdef FORGE
 #include "LuaEngine.h"
 #endif
 #include "WorldStatePackets.h"
@@ -147,10 +147,10 @@ bool GameEventMgr::StartEvent(uint16 event_id, bool overwrite)
 
         // When event is started, set its worldstate to current time
         sWorld->setWorldState(event_id, GameTime::GetGameTime());
-#ifdef ELUNA
+#ifdef FORGE
         if (IsActiveEvent(event_id))
-            if (Eluna* e = sWorld->GetEluna())
-                e->OnGameEventStart(event_id);
+            if (Forge* f = sWorld->GetForge())
+                f->OnGameEventStart(event_id);
 #endif
         return false;
     }
@@ -175,10 +175,10 @@ bool GameEventMgr::StartEvent(uint16 event_id, bool overwrite)
         if (overwrite && conditions_met)
             sWorld->ForceGameEventUpdate();
 
-#ifdef ELUNA
+#ifdef FORGE
         if (IsActiveEvent(event_id))
-            if (Eluna* e = sWorld->GetEluna())
-                e->OnGameEventStart(event_id);
+            if (Forge* f = sWorld->GetForge())
+                f->OnGameEventStart(event_id);
 #endif
         return conditions_met;
     }
@@ -226,10 +226,10 @@ void GameEventMgr::StopEvent(uint16 event_id, bool overwrite)
         }
     }
 
-#ifdef ELUNA
+#ifdef FORGE
     if (!IsActiveEvent(event_id))
-        if (Eluna* e = sWorld->GetEluna())
-            e->OnGameEventStop(event_id);
+        if (Forge* f = sWorld->GetForge())
+            f->OnGameEventStop(event_id);
 #endif
 }
 

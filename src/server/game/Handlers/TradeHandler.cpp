@@ -30,7 +30,7 @@
 #include "TradeData.h"
 #include "World.h"
 #include "WorldPacket.h"
-#ifdef ELUNA
+#ifdef FORGE
 #include "LuaEngine.h"
 #endif
 
@@ -353,10 +353,10 @@ void WorldSession::HandleAcceptTradeOpcode(WorldPacket& /*recvPacket*/)
         }
     }
 
-#ifdef ELUNA
-    if (Eluna* e = _player->GetEluna())
+#ifdef FORGE
+    if (Forge* f = _player->GetForge())
     {
-        if (!e->OnTradeAccept(_player, trader))
+        if (!f->OnTradeAccept(_player, trader))
         {
             info.Status = TRADE_STATUS_CLOSE_WINDOW;
             info.Result = EQUIP_ERR_CLIENT_LOCKED_OUT;
@@ -707,10 +707,10 @@ void WorldSession::HandleInitiateTradeOpcode(WorldPacket& recvPacket)
         return;
     }
 
-#ifdef ELUNA
-    if (Eluna* e = GetPlayer()->GetEluna())
+#ifdef FORGE
+    if (Forge* f = GetPlayer()->GetForge())
     {
-        if (!e->OnTradeInit(GetPlayer(), pOther))
+        if (!f->OnTradeInit(GetPlayer(), pOther))
         {
             info.Status = TRADE_STATUS_BUSY;
             SendTradeStatus(info);

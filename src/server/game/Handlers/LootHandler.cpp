@@ -30,7 +30,7 @@
 #include "ObjectAccessor.h"
 #include "Player.h"
 #include "WorldPacket.h"
-#ifdef ELUNA
+#ifdef FORGE
 #include "LuaEngine.h"
 #endif
 
@@ -207,9 +207,9 @@ void WorldSession::HandleLootMoneyOpcode(WorldPacket& /*recvData*/)
             SendPacket(&data);
         }
 
-#ifdef ELUNA
-        if (Eluna* e = player->GetEluna())
-            e->OnLootMoney(player, loot->gold);
+#ifdef FORGE
+        if (Forge* f = player->GetForge())
+            f->OnLootMoney(player, loot->gold);
 #endif
         loot->gold = 0;
 
@@ -484,9 +484,9 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recvData)
     target->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_TYPE, loot->loot_type, item.count);
     target->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_EPIC_ITEM, item.itemid, item.count);
 
-#ifdef ELUNA
-    if (Eluna* e = target->GetEluna())
-        e->OnLootItem(target, newitem, item.count, lootguid);
+#ifdef FORGE
+    if (Forge* f = target->GetForge())
+        f->OnLootItem(target, newitem, item.count, lootguid);
 #endif
     // mark as looted
     item.count = 0;

@@ -30,7 +30,7 @@
 #include "VMapManager2.h"
 #include "World.h"
 
-#ifdef ELUNA
+#ifdef FORGE
 #include "LuaEngine.h"
 #endif
 
@@ -277,9 +277,9 @@ BattlegroundMap* MapInstanced::CreateBattleground(uint32 InstanceId, Battlegroun
 
     sScriptMgr->OnCreateMap(map);
 
-#ifdef ELUNA
-    if(Eluna* e = map->GetEluna())
-        e->OnBGCreate(bg, bg->GetTypeID(), bg->GetInstanceID());
+#ifdef FORGE
+    if(Forge* f = map->GetForge())
+        f->OnBGCreate(bg, bg->GetTypeID(), bg->GetInstanceID());
 #endif
 
     return map;

@@ -44,7 +44,7 @@
 #include "Pet.h"
 #include "Player.h"
 #include "ReputationMgr.h"
-#ifdef ELUNA
+#ifdef FORGE
 #include "LuaEngine.h"
 #endif
 #include "ScriptMgr.h"
@@ -716,15 +716,15 @@ void Spell::EffectDummy()
     // normal DB scripted effect
     TC_LOG_DEBUG("spells", "Spell ScriptStart spellid {} in EffectDummy({})", m_spellInfo->Id, uint32(effectInfo->EffectIndex));
     m_caster->GetMap()->ScriptsStart(sSpellScripts, uint32(m_spellInfo->Id | (effectInfo->EffectIndex << 24)), m_caster, unitTarget);
-#ifdef ELUNA
-    if (Eluna* e = m_caster->GetEluna())
+#ifdef FORGE
+    if (Forge* f = m_caster->GetForge())
     {
         if (gameObjTarget)
-            e->OnDummyEffect(m_caster, m_spellInfo->Id, effectInfo->EffectIndex, gameObjTarget);
+            f->OnDummyEffect(m_caster, m_spellInfo->Id, effectInfo->EffectIndex, gameObjTarget);
         else if (unitTarget && unitTarget->GetTypeId() == TYPEID_UNIT)
-            e->OnDummyEffect(m_caster, m_spellInfo->Id, effectInfo->EffectIndex, unitTarget->ToCreature());
+            f->OnDummyEffect(m_caster, m_spellInfo->Id, effectInfo->EffectIndex, unitTarget->ToCreature());
         else if (itemTarget)
-            e->OnDummyEffect(m_caster, m_spellInfo->Id, effectInfo->EffectIndex, itemTarget);
+            f->OnDummyEffect(m_caster, m_spellInfo->Id, effectInfo->EffectIndex, itemTarget);
     }
 #endif
 }
@@ -1748,12 +1748,12 @@ void Spell::SendLoot(ObjectGuid guid, LootType loottype)
         }
 
         player->PlayerTalkClass->ClearMenus();
-#ifdef ELUNA
-        if (Eluna* e = player->GetEluna())
+#ifdef FORGE
+        if (Forge* f = player->GetForge())
         {
-            if (e->OnGossipHello(player, gameObjTarget))
+            if (f->OnGossipHello(player, gameObjTarget))
                 return;
-            if (e->OnGameObjectUse(player, gameObjTarget))
+            if (f->OnGameObjectUse(player, gameObjTarget))
                 return;
         }
 #endif

@@ -32,7 +32,7 @@
 #include "ScriptMgr.h"
 #include "Spell.h"
 #include "SpellAuraEffects.h"
-#ifdef ELUNA
+#ifdef FORGE
 #include "LuaEngine.h"
 #endif
 #include "SpellMgr.h"
@@ -319,9 +319,9 @@ void WorldSession::HandleGameobjectReportUse(WorldPacket& recvPacket)
 
     if (GameObject* go = GetPlayer()->GetGameObjectIfCanInteractWith(guid))
     {
-#ifdef ELUNA
-        if (Eluna* e = GetPlayer()->GetEluna())
-            if (e->OnGameObjectUse(_player, go))
+#ifdef FORGE
+        if (Forge* f = GetPlayer()->GetForge())
+            if (f->OnGameObjectUse(_player, go))
                 return;
 #endif
         if (go->AI()->OnReportUse(_player))

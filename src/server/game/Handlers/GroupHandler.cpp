@@ -34,7 +34,7 @@
 #include "Vehicle.h"
 #include "World.h"
 #include "WorldPacket.h"
-#ifdef ELUNA
+#ifdef FORGE
 #include "LuaEngine.h"
 #endif
 
@@ -232,9 +232,9 @@ void WorldSession::HandleGroupAcceptOpcode(WorldPacket& recvData)
         return;
     }
 
-#ifdef ELUNA
-    if (Eluna* e = GetPlayer()->GetEluna())
-        if (!e->OnMemberAccept(group, GetPlayer()))
+#ifdef FORGE
+    if (Forge* f = GetPlayer()->GetForge())
+        if (!f->OnMemberAccept(group, GetPlayer()))
             return;
 #endif
 
