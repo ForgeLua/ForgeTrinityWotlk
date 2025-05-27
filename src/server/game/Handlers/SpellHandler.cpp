@@ -18,6 +18,7 @@
 #include "WorldSession.h"
 #include "Common.h"
 #include "Config.h"
+#include "CreatureOutfit.h"
 #include "DatabaseEnv.h"
 #include "Log.h"
 #include "DBCStores.h"
@@ -28,6 +29,7 @@
 #include "ObjectAccessor.h"
 #include "ObjectMgr.h"
 #include "Opcodes.h"
+#include "Transmogrification.h"
 #include "Player.h"
 #include "ScriptMgr.h"
 #include "Spell.h"
@@ -613,6 +615,33 @@ void WorldSession::HandleMirrorImageDataRequest(WorldPacket& recvData)
     if (!unit)
         return;
 
+    if (Creature* creature = unit->ToCreature())
+    {
+        if (std::shared_ptr<CreatureOutfit> const & outfit_ptr = creature->GetOutfit())
+        {
+            CreatureOutfit const& outfit = *outfit_ptr;
+            WorldPacket data(SMSG_MIRRORIMAGE_DATA, 68);
+            data << uint64(guid);
+            data << uint32(outfit.GetDisplayId());  // displayId
+            data << uint8(outfit.GetRace());        // race
+            data << uint8(outfit.GetGender());      // gender
+            data << uint8(outfit.Class);            // class
+            data << uint8(outfit.skin);             // skin
+            data << uint8(outfit.face);             // face
+            data << uint8(outfit.hair);             // hair
+            data << uint8(outfit.haircolor);        // haircolor
+            data << uint8(outfit.facialhair);       // facialhair
+            data << uint32(outfit.guild);           // guildId
+
+            // item displays
+            for (auto const& slot : CreatureOutfit::item_slots)
+                data << uint32(outfit.outfitdisplays[slot]);
+
+            SendPacket(&data);
+            return;
+        }
+    }
+
     if (!unit->HasAuraType(SPELL_AURA_CLONE_CASTER))
         return;
 
@@ -661,7 +690,12 @@ void WorldSession::HandleMirrorImageDataRequest(WorldPacket& recvData)
             else if (*itr == EQUIPMENT_SLOT_BACK && player->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_CLOAK))
                 data << uint32(0);
             else if (Item const* item = player->GetItemByPos(INVENTORY_SLOT_BAG_0, *itr))
-                data << uint32(item->GetTemplate()->DisplayInfoID);
+            {
+                if (auto const * itemTemplate = sObjectMgr->GetItemTemplate(item->transmog))
+                    data << uint32(itemTemplate->DisplayInfoID);
+                else
+                    data << uint32(item->GetTemplate()->DisplayInfoID);
+            }
             else
                 data << uint32(0);
         }

@@ -896,7 +896,6 @@ struct ItemBagFamilyEntry
     //uint32 Name_lang_mask;                                // 17
 };
 
-/*
 struct ItemDisplayInfoEntry
 {
     uint32 ID;                                              // 0
@@ -912,7 +911,6 @@ struct ItemDisplayInfoEntry
     int32 ItemVisual;                                       // 23
     uint32 ParticleColorID;                                 // 24
 };
-*/
 
 /*
 struct ItemCondExtCostsEntry
@@ -1150,6 +1148,15 @@ struct NamesReservedEntry
     //uint32 ID;                                            // 0
     char const* Name;                                       // 1
     int32 Language;                                         // 2
+};
+
+struct NPCSoundsEntry
+{
+    uint32 Id;
+    uint32 hello;
+    uint32 goodbye;
+    uint32 pissed;
+    uint32 ack;
 };
 
 #define MAX_OVERRIDE_SPELL 10

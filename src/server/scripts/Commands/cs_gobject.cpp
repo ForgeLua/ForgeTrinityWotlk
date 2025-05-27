@@ -72,6 +72,7 @@ public:
             { "add",            HandleGameObjectAddCommand,       rbac::RBAC_PERM_COMMAND_GOBJECT_ADD,            Console::No },
             { "set phase",      HandleGameObjectSetPhaseCommand,  rbac::RBAC_PERM_COMMAND_GOBJECT_SET_PHASE,      Console::No },
             { "set state",      HandleGameObjectSetStateCommand,  rbac::RBAC_PERM_COMMAND_GOBJECT_SET_STATE,      Console::No },
+            { "set scale",      HandleGameObjectSetScaleCommand,  rbac::RBAC_PERM_COMMAND_GOBJECT_SET_SCALE,      Console::No },
         };
         static ChatCommandTable commandTable =
         {
@@ -637,6 +638,35 @@ public:
                 break;
         }
         handler->PSendSysMessage("Set gobject type %d state %u", objectType, *objectState);
+        return true;
+    }
+
+    static bool HandleGameObjectSetScaleCommand(ChatHandler* handler, GameObjectSpawnId guidLow, float scale)
+    {
+        GameObject* object = handler->GetObjectFromPlayerMapByDbGuid(guidLow);
+        if (!object)
+        {
+            handler->PSendSysMessage(LANG_COMMAND_OBJNOTFOUND, guidLow);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        if (scale <= 0.0f)
+        {
+            scale = object->GetGOInfo()->size;
+            const_cast<GameObjectData*>(object->GetGameObjectData())->size = -1.0f;
+        }
+        else
+        {
+            const_cast<GameObjectData*>(object->GetGameObjectData())->size = scale;
+        }
+
+        object->SetObjectScale(scale);
+        object->DestroyForNearbyPlayers();
+        object->UpdateObjectVisibility();
+        object->SaveToDB();
+
+        handler->PSendSysMessage("Set %s scale to %f", object->GetGUID().ToString(), scale);
         return true;
     }
 };
