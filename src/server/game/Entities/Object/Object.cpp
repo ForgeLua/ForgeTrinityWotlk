@@ -1836,7 +1836,7 @@ void WorldObject::SetMap(Map* map)
     }
 
     // create the World events processor
-    if (Forge* e = sWorld->GetForge())
+    if (Forge* f = sWorld->GetForge())
     {
         auto& events = GetForgeEvents(-1);
         if (!events)
