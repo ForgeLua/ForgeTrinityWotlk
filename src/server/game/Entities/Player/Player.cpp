@@ -12284,7 +12284,10 @@ void Player::RemoveItem(uint8 bag, uint8 slot, bool update)
                     }
 #ifdef FORGE
                     if (Forge* f = GetForge())
+                    {
                         f->OnItemUnEquip(this, pItem, slot);
+                        f->OnPlayerUnEquipItem(this, pItem, slot);
+                    }
 #endif
                 }
             }
@@ -12431,7 +12434,10 @@ void Player::DestroyItem(uint8 bag, uint8 slot, bool update)
                 SetVisibleItemSlot(slot, nullptr);
 #ifdef FORGE
                 if (Forge* f = GetForge())
+                {
                     f->OnItemUnEquip(this, pItem, slot);
+                    f->OnPlayerUnEquipItem(this, pItem, slot);
+                }
 #endif
             }
 
@@ -12967,6 +12973,10 @@ void Player::SwapItem(uint16 src, uint16 dst)
 
             RemoveItem(srcbag, srcslot, true);
             StoreItem(dest, pSrcItem, true);
+#ifdef FORGE
+            if (Forge* f = GetForge())
+                f->OnPlayerItemMove(this, srcbag, srcslot, dstbag, dstslot, pSrcItem, nullptr);
+#endif
             if (IsBankPos(src))
                 ItemAddedQuestCheck(pSrcItem->GetEntry(), pSrcItem->GetCount());
         }
@@ -12982,6 +12992,10 @@ void Player::SwapItem(uint16 src, uint16 dst)
 
             RemoveItem(srcbag, srcslot, true);
             BankItem(dest, pSrcItem, true);
+#ifdef FORGE
+            if (Forge* f = GetForge())
+                f->OnPlayerItemMove(this, srcbag, srcslot, dstbag, dstslot, pSrcItem, nullptr);
+#endif
             ItemRemovedQuestCheck(pSrcItem->GetEntry(), pSrcItem->GetCount());
         }
         else if (IsEquipmentPos(dst))
@@ -12996,6 +13010,10 @@ void Player::SwapItem(uint16 src, uint16 dst)
 
             RemoveItem(srcbag, srcslot, true);
             EquipItem(dest, pSrcItem, true);
+#ifdef FORGE
+            if (Forge* f = GetForge())
+                f->OnPlayerItemMove(this, srcbag, srcslot, dstbag, dstslot, pSrcItem, nullptr);
+#endif
             AutoUnequipOffhandIfNeed();
         }
 
@@ -13046,6 +13064,10 @@ void Player::SwapItem(uint16 src, uint16 dst)
                     pDstItem->SendUpdateToPlayer(this);
                 }
             }
+#ifdef FORGE
+            if (Forge* f = GetForge())
+                f->OnPlayerItemMove(this, srcbag, srcslot, dstbag, dstslot, pSrcItem, nullptr);
+#endif
             SendRefundInfo(pDstItem);
             return;
         }
@@ -13142,6 +13164,11 @@ void Player::SwapItem(uint16 src, uint16 dst)
                     SendEquipError(EQUIP_ERR_CANT_SWAP, pSrcItem, pDstItem);
                     return;
                 }
+                
+#ifdef FORGE
+                if (Forge* f = GetForge())
+                    f->OnPlayerItemMove(this, srcbag, srcslot, dstbag, dstslot, pSrcItem, nullptr);
+#endif
 
                 // Items swap
                 count = 0;                                      // will pos in new bag
@@ -13225,6 +13252,10 @@ void Player::SwapItem(uint16 src, uint16 dst)
         }
     }
 
+#ifdef FORGE
+    if (Forge* f = GetForge())
+        f->OnPlayerItemMove(this, srcbag, srcslot, dstbag, dstslot, pSrcItem, nullptr);
+#endif
     AutoUnequipOffhandIfNeed();
 }
 
@@ -21692,6 +21723,11 @@ inline bool Player::_StoreOrEquipNewItem(uint32 vendorslot, uint32 item, uint8 c
             it->SaveRefundDataToDB();
             AddRefundReference(it->GetGUID());
         }
+
+#ifdef FORGE
+        if (Forge* f = GetForge())
+            f->OnPlayerItemBuy(this, it, pVendor, pProto, stacks);
+#endif
     }
     return true;
 }
